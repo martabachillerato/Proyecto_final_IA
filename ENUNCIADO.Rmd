@@ -1,0 +1,125 @@
+---
+title: "Puntos"
+author: "Marta Martín Fernández"
+date: "2026-02-25"
+output: 
+  html_document: default
+  pdf_document: default
+---
+
+Guía del Proyecto Final: Inteligencia Artificial y Estadística
+Curso 2025-26 | Grado en Estadística · Facultad de Matemáticas
+
+# 1. Definición del Problema
+
+### Enunciado claro del problema a resolver.
+
+### Contexto y justificación del análisis.
+
+### Selección de un conjunto de datos apropiado.
+
+### Objetivos específicos del proyecto.
+
+# 2. Importación de Datos
+
+### Obtención de datos desde múltiples fuentes (CSV, Excel, JSON, APIs, web scraping, etc.).
+
+# 3. Transformaciones
+
+### Limpieza, filtrado, agregación, creación de variables derivadas.
+
+# 4. Mapeo
+
+### Aplicación de funciones sobre datos (map, apply, transformaciones elemento a elemento).
+
+# 5. Ordenación
+
+### Organización de datos (sort, arrange, ordenación por múltiples criterios).
+
+# 6. Visualización
+
+### Gráficos exploratorios y explicativos con bibliotecas como matplotlib, seaborn, plotnine.
+
+### Visualizaciones que comuniquen insights de forma clara.
+
+# 7. Modelización
+
+### Implementación de al menos un modelo de ML con scikit-learn.
+
+### Preprocesamiento de datos (normalización, encoding, etc.).
+
+### Evaluación del modelo con métricas apropiadas.
+
+# 8. Comunicación
+
+### Presentación de resultados mediante aplicación web (Streamlit, Dash, Shiny).
+
+### Documentación clara del proyecto y código.
+
+### Interpretación de resultados y conclusiones.
+
+# **TEMAS AVANZADOS**
+
+# 1. Orquestadores de Datos
+
+### Implementación de pipelines con Dagster, Airflow, o similares.
+
+### Gestión de dependencias entre tareas.
+
+### Scheduling y automatización de procesos.
+
+### Monitoreo y logging estructurado.
+
+# 2. Herramientas de Aceleración y Big Data
+
+### Uso de Dask para procesamiento paralelo.
+
+### Optimización de rendimiento en datos grandes.
+
+### Manejo eficiente de memoria.
+
+# 3. Scripts en R como Utilitarios
+
+### Integración de scripts R en el pipeline Python.
+
+### Uso de paquetes especializados de R (tidyverse, ggplot2, caret, etc.).
+
+### Interoperabilidad Python-R (rpy2, reticulate).
+
+### Aprovechamiento de fortalezas de ambos lenguajes.
+
+# 4. Deep Learning
+
+### Implementación de redes neuronales con keras/tensorflow/torch.
+
+### Aplicación de arquitecturas modernas (CNN, RNN, Transformers).
+
+### Fine-tuning de modelos pre-entrenados.
+
+# **¿QUÉ SE TIENE QUE ENTREGAR?**
+
+# 1. Repositorio de Código (GitHub/GitLab)
+
+### Código fuente completo y organizado.
+
+### README con instrucciones de instalación y uso.
+
+### Archivo de dependencias (requirements.txt, pyproject.toml).
+ 
+# 2. Aplicación Web Desplegada
+
+### URL funcional de la app (Streamlit Cloud, Heroku, etc.).
+
+### Instrucciones claras para ejecutar localmente.
+
+# 3. Documentación
+
+### Descripción del dataset y metodología.
+
+### Explicación de decisiones técnicas.
+
+### Interpretación de resultados y conclusiones.
+
+# 4. Presentación Breve
+
+### Slides resumiendo el proyecto (5-10 minutos).
