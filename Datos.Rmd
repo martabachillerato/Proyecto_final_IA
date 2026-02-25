@@ -1,0 +1,222 @@
+---
+title: "Datos"
+output: html_document
+---
+
+# 🔹 1️⃣¿Qué datos necesitas?
+
+Tu modelo necesita:
+
+-   📷 Imágenes o videos de rostros
+
+-   🏷 Etiquetas de emoción:
+
+    -   Feliz
+
+    -   Triste
+
+    -   Enojado
+
+    -   Miedo
+
+    -   Sorpresa
+
+    -   Neutral
+
+El modelo aprenderá a asociar patrones faciales con cada etiqueta.
+
+# 🔹 2️⃣ Opciones para obtener datos
+
+## ✅ OPCIÓN A (RECOMENDADA): Usar datasets ya existentes
+
+Es lo más práctico para un proyecto académico.
+
+### 🔹 Dataset FER-2013
+
+-    35.000 imágenes en escala de grises
+
+-    7 emociones
+
+-   Rostros centrados
+
+-   Se puede encontrar en:
+
+    -   Kaggle
+
+    -   Repositorios académicos
+
+### 🔹 Dataset CK+ (Cohn-Kanade)
+
+Muy usado en investigación psicológica.\
+Incluye secuencias de video desde expresión neutral hasta emoción máxima.
+
+### 🔹 Dataset RAF-DB
+
+Más realista (caras en situaciones naturales).
+
+## ✅ OPCIÓN B: Crear tu propio dataset
+
+Si queréis hacerlo más experimental (y más relacionado con psicología), podéis grabar participantes.
+
+### Cómo hacerlo correctamente:
+
+### 1️⃣ Consentimiento informado
+
+Muy importante por ética:
+
+-    Explicar que se grabará su rostro
+
+-    Explicar que los datos son solo para investigación
+
+-   Permitir retirar consentimiento
+
+### 2️⃣ Grabación
+
+Con OpenCV podéis:
+
+import cv2
+
+cap = cv2.VideoCapture(0)
+
+while True: ret, frame = cap.read() cv2.imshow("Grabacion", frame)
+
+```         
+if cv2.waitKey(1) & 0xFF == ord('q'):
+    break
+```
+
+cap.release() cv2.destroyAllWindows()
+
+### 3️⃣ Protocolo psicológico
+
+Aquí entra la parte interesante 🧠
+
+Para provocar emociones podéis:
+
+-    Mostrar imágenes emocionales
+
+-    Mostrar clips de video
+
+-    Pedir que recuerden experiencias personales
+
+-    Mostrar escenas diseñadas
+
+EJEMPLO
+
+| Emoción  | Estímulo                    |
+|----------|-----------------------------|
+| Feliz    | Video gracioso              |
+| Triste   | Escena emocional            |
+| Miedo    | Escena de suspense          |
+| Sorpresa | Sonido inesperado           |
+| Enojo    | Situación frustrante        |
+| Neutral  | Mirar a cámara sin estímulo |
+
+### 4️⃣ Etiquetado
+
+Hay dos formas:
+
+### ✔ Método 1: Etiquetado manual
+
+Después de grabar:
+
+-    Revisáis el video
+
+-    Cortáis frames
+
+-    Guardáis imágenes en carpetas:
+
+dataset/ feliz/ triste/ miedo/ sorpresa/ enojo/ neutral/
+
+# 🔹 3️⃣ Preprocesamiento (Muy importante)
+
+Antes de entrenar:
+
+### ✔ Detectar rostro
+
+Con MediaPipe:
+
+-    Detectar landmarks
+
+-    Recortar solo la cara
+
+-    Convertir a escala de grises
+
+-    Redimensionar (ej. 48x48 si usas FER)
+
+### ✔ Normalizar
+
+Dividir por 255: img = img / 255.0
+
+# 🔹 4️⃣ ¿Cuántos datos necesitáis?
+
+Mínimo recomendado:
+
+-    🔹 500–1000 imágenes por emoción (proyecto académico)
+
+-    🔹 Más de 3000 por emoción (mejor rendimiento)
+
+-    Si hacéis dataset propio:
+
+    -   10–20 participantes mínimo
+
+    -   Variar:
+
+        -   Luz
+
+        -   Ángulo
+
+        -   Género
+
+        -   Edad
+
+# 🔹 5️⃣ División del dataset
+
+Siempre dividir:
+
+-    70% entrenamiento
+
+-    15% validación
+
+-   15% prueba
+
+-    Nunca entrenar y probar con las mismas imágenes.
+
+# 🔹 6️⃣ Problemas comunes
+
+⚠ Las emociones fingidas no son iguales a las reales\
+⚠ Algunas emociones se confunden mucho:
+
+-    miedo vs sorpresa
+
+-    tristeza vs neutral
+
+    ⚠ Dataset pequeño → sobreajuste
+
+# 🔹 7️⃣ Conexión con Psicología
+
+Podéis medir:
+
+-    ¿El modelo detecta mejor la felicidad que el miedo?
+
+-    ¿Las expresiones son realmente universales?
+
+-    ¿Hay diferencias entre personas?
+
+Ahí podéis relacionarlo con:
+
+-    Universalidad emocional de [Paul Ekman]{.underline}
+
+-    Microexpresiones
+
+-   Expresiones espontáneas vs fingidas
+
+# 🔹 8️⃣ Recomendación estratégica para vuestro proyecto
+
+Si es universitario:
+
+✔ Usad FER-2013 para entrenar\
+✔ Usad grabaciones propias para probar\
+✔ Comparad resultados
+
+Eso queda muy fuerte académicamente 💪
