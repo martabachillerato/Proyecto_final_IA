@@ -1,19 +1,21 @@
 # 🧠 Reconocimiento de Emociones Faciales con Deep Learning
 
-Proyecto final de Inteligencia Artificial para la clasificación de imágenes en 7 estados emocionales utilizando diferentes modelos: Angry, Disgust, Fear, Happy, Neutral, Sad, Surprise.
+Proyecto final de Inteligencia Artificial para la clasificación de imágenes en 7 estados emocionales utilizando diferentes modelos: Angry, Disgust, Fear, Happy, Neutral, Sad, Surprise. Combina ingeniería de datos, análisis estadístico avanzado con el uso de R y Python, Big Data y Deep Learning para clasificar correctamente las imágenes que seleccionemos.
+
+## 📋 Objetivo del proyecto 
+
+El fin de este trabajo consiste en el desarrollo de un sistema de visión artificial capaz de clasificar emociones humanas a través de imágenes.
+
+## 📋 Problema que puede presentar 
+
+La clasificación manual de emociones en grandes volúmenes de datos es ineficiente y subjetiva. La baja resolución de imágenes faciales (48x48 píxeles) dificulta la detección de microexpresiones críticas para el análisis del comportamiento.
 
 ## 📋 Análisis del Dataset
 **Volumen** : 28.709 imágenes en escala de grises.
 **Resolución** : 48x48 píxeles por imagen.
 **Desequilibrio de clases** : Mediante un análisis estadístico realizado en lenguaje R, se identificó un sesgo significativo hacia las clases Happy y Neutral, lo que puede condicionar la estrategia del entrenamiento.
 
-## 🛠️ Tecnologías utilizadas
-· **Core** : Python y PyTorch (Modelado de Deep Learning).
-· **Análisis** : R y ggplot2 (Análisis estadístico de sesgos).
-· **Despliegue** : Streamlit (Aplicación web interactiva con el procedimiento y resultado).
-· **Visión Artificial** : OpenCV (Preprocesamiento de imágenes).
-
-## 🚀 Instrucciones de uso local
+## 🚀 Instalación e instrucciones para reproducibilidad
 1. Clonar el repositorio.
 2. Instalar dependencias: `pip install -r requirements.txt`
 3. Ejecutar la aplicación: `python -m streamlit run app.py`
