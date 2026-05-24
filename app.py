@@ -54,17 +54,17 @@ st.set_page_config(page_title="Proyecto Final IA - Emociones", layout="wide")
 @st.cache_resource
 def cargar_modelos():
     cnn = EmotionCNN()
-    if os.path.exists('modelo_emociones.pth'):
-        cnn.load_state_dict(torch.load('modelo_emociones.pth', map_location=torch.device('cpu')))
+    if os.path.exists('streamlit/modelo_emociones.pth'):
+        cnn.load_state_dict(torch.load('streamlit/modelo_emociones.pth', map_location=torch.device('cpu')))
     cnn.eval()
 
     yolo = None
-    if os.path.exists('best.pt'):
-        yolo = YOLO('best.pt')
+    if os.path.exists('streamlit/best.pt'):
+        yolo = YOLO('streamlit/best.pt')
 
     resnet = crear_modelo_resnet()
-    if os.path.exists('modelo_resnet_final.pth'):
-        resnet.load_state_dict(torch.load('modelo_resnet_final.pth', map_location=torch.device('cpu')))
+    if os.path.exists('streamlit/modelo_resnet_final.pth'):
+        resnet.load_state_dict(torch.load('streamlit/modelo_resnet_final.pth', map_location=torch.device('cpu')))
     resnet.eval()
 
     return cnn, yolo, resnet
@@ -185,7 +185,7 @@ with tab_r:
     CONTEOS_BASE = {'angry': 3995, 'disgust': 436, 'fear': 4097, 'happy': 7215,
                     'neutral': 4965, 'sad': 4830, 'surprise': 3171}
 
-    CSV_R_PATH = "datos_eda_r.csv"
+    CSV_R_PATH = "streamlit/datos_eda_r.csv"
     if os.path.exists(CSV_R_PATH):
         df_r = pd.read_csv(CSV_R_PATH)
         if 'label_encoded' not in df_r.columns:
@@ -303,10 +303,10 @@ with tab_r:
     tiene un único código (mapeo determinista), las cajas se colapsan en un punto sin dispersión.
     """)
 
-    if os.path.exists("dispersion_categorias.jpeg"):
+    if os.path.exists("streamlit/dispersion_categorias.jpeg"):
         _, col_disp, _ = st.columns([1, 4, 1])
         with col_disp:
-            st.image("boxplot_emociones.png", caption="Dispersion de las Categorias de Emocion (R — ggplot2)", use_container_width=True)
+            st.image("streamlit/boxplot_emociones.png", caption="Dispersion de las Categorias de Emocion (R — ggplot2)", use_container_width=True)
     else:
         st.error("⚠️ Imagen 'boxplot_emociones.png' no encontrada.")
 
@@ -329,8 +329,8 @@ with tab_r:
     El resultado equivale al archivo `matriz_diferencias_r.csv` generado por R.
     """)
 
-    if os.path.exists("matriz_diferencias_r.csv"):
-        df_mat = pd.read_csv("matriz_diferencias_r.csv", index_col=0)
+    if os.path.exists("streamlit/matriz_diferencias_r.csv"):
+        df_mat = pd.read_csv("streamlit/matriz_diferencias_r.csv", index_col=0)
         mat_vals = df_mat.values.astype(int)
         emos_mat = list(df_mat.index)
         st.caption("Datos cargados desde `matriz_diferencias_r.csv` generado originalmente por R.")
@@ -473,7 +473,7 @@ final = resultado.compute()         # Ejecuta TODO aquí
     (lectura + `groupby` + `count`) y medimos el tiempo de cada librería:
     """)
 
-    CSV_PATH = "datos_emociones.csv"
+    CSV_PATH = "streamlit/datos_emociones.csv"
 
     def comparar_librerias():
         start_p = time.time()
@@ -835,7 +835,7 @@ with tab4:
     st.subheader("Matriz de Confusión: ResNet-18 (61%)")
     _, col_img, _ = st.columns([1, 3, 1])
     with col_img:
-        st.image("matrizConfusion_modelo4.png", use_container_width=True)
+        st.image("streamlit/matrizConfusion_modelo4.png", use_container_width=True)
     st.write("""
     La matriz de confusión revela con precisión los puntos fuertes y débiles del modelo. En la diagonal principal se concentran los aciertos: **Happy** lidera con 878 predicciones correctas sobre 1016 imágenes reales, lo que se traduce en un f1-score de 0.81, siendo la emoción más reconocible del dataset gracias a su expresión facial inequívoca (sonrisa amplia, ojos entornados). **Surprise** también destaca con 316 aciertos sobre 434, apoyado en rasgos muy visuales como cejas elevadas y boca abierta.
 
@@ -847,7 +847,7 @@ with tab4:
     st.subheader("Visualización de Errores Críticos")
     _, col_img, _ = st.columns([1, 4, 1])
     with col_img:
-        st.image("imagen_ejemplo_modelo3.png", use_container_width=True)
+        st.image("streamlit/imagen_ejemplo_modelo3.png", use_container_width=True)
     st.write("""
     Esta imagen muestra cinco casos representativos donde el modelo falla, y en todos ellos el error es comprensible desde un punto de vista humano. El primer caso (**Real: Angry → Pred: Happy**) corresponde a una imagen oscura y de muy baja calidad donde los rasgos faciales son prácticamente irreconocibles. Los casos **Real: Angry → Pred: Sad** y **Real: Sad → Pred: Neutral** ilustran la confusión entre emociones de valencia negativa. Los dos últimos casos (**Real: Sad → Pred: Fear** y **Real: Fear → Pred: Sad**) son especialmente reveladores: ambas emociones comparten el levantamiento de las cejas internas y la apertura ocular. Estos errores reflejan el límite del dataset, no de la arquitectura.
     """)
@@ -936,10 +936,10 @@ with tab6:
 
     # ── GRÁFICA DE LOSS ──────────────────────────────────────
     st.subheader("📈 Evolución del Loss por Modelo")
-    if os.path.exists("comparativa_loss_modelos.png"):
+    if os.path.exists("streamlit/comparativa_loss_modelos.png"):
         _, col_img, _ = st.columns([1, 4, 1])
         with col_img:
-            st.image("comparativa_loss_modelos.png", use_container_width=True)
+            st.image("streamlit/comparativa_loss_modelos.png", use_container_width=True)
         st.caption("⚠️ VGG16: valores aproximados por no disponer del historial original. CNN, YOLOv8 y ResNet-18 usan valores reales.")
     else:
         st.error("⚠️ Archivo 'comparativa_loss_modelos.png' no encontrado.")
@@ -950,8 +950,8 @@ with tab6:
     st.subheader("📊 Tabla Comparativa de Métricas")
     st.write("Resumen de los resultados finales de cada arquitectura evaluada:")
 
-    if os.path.exists("tabla_comparativa_modelos.csv"):
-        tabla_comparativa = pd.read_csv("tabla_comparativa_modelos.csv")
+    if os.path.exists("streamlit/tabla_comparativa_modelos.csv"):
+        tabla_comparativa = pd.read_csv("streamlit/tabla_comparativa_modelos.csv")
         st.dataframe(tabla_comparativa, use_container_width=True, hide_index=True)
     else:
         st.error("⚠️ Archivo 'tabla_comparativa_modelos.csv' no encontrado.")
