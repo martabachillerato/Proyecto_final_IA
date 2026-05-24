@@ -1,0 +1,10 @@
+streamlit
+torch
+torchvision
+Pillow
+numpy
+opencv-python-headless
+ultralytics
+pandas
+dask[dataframe]
+matplotlib
