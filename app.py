@@ -384,7 +384,7 @@ with tab_r:
             _col.append(float(abs(_freq_r[_i - 1] - _freq_r[_j - 1])) if _i > _j else np.nan)
         _dist_vals[_jstr] = _col
     df_dist_r = pd.DataFrame(_dist_vals, index=_rows_r)
-    st.dataframe(str
+    st.dataframe(
         df_dist_r.style.format(lambda v: '' if (isinstance(v, float) and np.isnan(v)) else f'{int(v):,}'),
         use_container_width=True
     )
