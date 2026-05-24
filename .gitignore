@@ -17,6 +17,6 @@ modelo_vgg/
 .claude/
 .jupyterlab-settings/
 
-# Dataset de imágenes (miles de archivos)
-train/
-test/
+# Dataset de imágenes (miles de archivos) - solo raíz
+/train/
+/test/

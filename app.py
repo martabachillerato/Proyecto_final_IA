@@ -159,16 +159,19 @@ with tab1:
     st.subheader("6. Visualización de Datos Reales")
     st.write("Muestras aleatorias del dataset de entrenamiento para inspección visual:")
     if st.button('🔄 Generar muestras aleatorias del Dataset (EDA)'):
-        p1, l1 = obtener_foto_real('train')
-        p2, l2 = obtener_foto_real('train')
-        if p1 and p2:
-            col_eda1, col_eda2 = st.columns(2)
-            with col_eda1:
-                img1_disp = Image.open(p1).resize((250, 250), Image.Resampling.LANCZOS)
-                st.image(img1_disp, caption=f"Etiqueta: {l1}")
-            with col_eda2:
-                img2_disp = Image.open(p2).resize((250, 250), Image.Resampling.LANCZOS)
-                st.image(img2_disp, caption=f"Etiqueta: {l2}")
+        if not os.path.exists('train'):
+            st.warning("⚠️ El dataset de imágenes no está disponible en esta versión cloud. Esta función requiere ejecutar la app localmente con el dataset descargado.")
+        else:
+            p1, l1 = obtener_foto_real('train')
+            p2, l2 = obtener_foto_real('train')
+            if p1 and p2:
+                col_eda1, col_eda2 = st.columns(2)
+                with col_eda1:
+                    img1_disp = Image.open(p1).resize((250, 250), Image.Resampling.LANCZOS)
+                    st.image(img1_disp, caption=f"Etiqueta: {l1}")
+                with col_eda2:
+                    img2_disp = Image.open(p2).resize((250, 250), Image.Resampling.LANCZOS)
+                    st.image(img2_disp, caption=f"Etiqueta: {l2}")
 
 # --- PESTAÑA 2: ANÁLISIS EN R ---
 with tab_r:
@@ -381,7 +384,7 @@ with tab_r:
             _col.append(float(abs(_freq_r[_i - 1] - _freq_r[_j - 1])) if _i > _j else np.nan)
         _dist_vals[_jstr] = _col
     df_dist_r = pd.DataFrame(_dist_vals, index=_rows_r)
-    st.dataframe(
+    st.dataframe(str
         df_dist_r.style.format(lambda v: '' if (isinstance(v, float) and np.isnan(v)) else f'{int(v):,}'),
         use_container_width=True
     )
@@ -564,26 +567,29 @@ with tab2:
     st.header("VISUALIZACIÓN DE PREDICCIONES CON CONFIANZA (%)")
     st.write("Probamos el modelo cargado `modelo_emociones.pth` con datos aleatorios:")
     if st.button('🎯 Realizar Prueba Visual Aleatoria'):
-        col_test1, col_test2 = st.columns(2)
-        cnn_m, _, _ = cargar_modelos()
-        for col in [col_test1, col_test2]:
-            p, l_real = obtener_foto_real('test')
-            if p:
-                img = Image.open(p).convert('L').resize((48, 48))
-                tensor = torch.FloatTensor(np.array(img)/255.0).unsqueeze(0).unsqueeze(0)
-                with torch.no_grad():
-                    out = cnn_m(tensor)
-                    probs = F.softmax(out, dim=1)
-                    conf, pred_idx = torch.max(probs, 1)
-                    l_pred = mapa_emociones[pred_idx.item()]
-                with col:
-                    img_disp = Image.open(p).resize((200, 200), Image.Resampling.LANCZOS)
-                    st.image(img_disp)
-                    st.write(f"**Real:** {l_real.capitalize()}")
-                    if l_real.lower() == l_pred.lower():
-                        st.success(f"**Predicción:** {l_pred} ({conf.item()*100:.2f}%)")
-                    else:
-                        st.error(f"**Predicción:** {l_pred} ({conf.item()*100:.2f}%)")
+        if not os.path.exists('test'):
+            st.warning("⚠️ El dataset de imágenes no está disponible en esta versión cloud. Esta función requiere ejecutar la app localmente con el dataset descargado.")
+        else:
+            col_test1, col_test2 = st.columns(2)
+            cnn_m, _, _ = cargar_modelos()
+            for col in [col_test1, col_test2]:
+                p, l_real = obtener_foto_real('test')
+                if p:
+                    img = Image.open(p).convert('L').resize((48, 48))
+                    tensor = torch.FloatTensor(np.array(img)/255.0).unsqueeze(0).unsqueeze(0)
+                    with torch.no_grad():
+                        out = cnn_m(tensor)
+                        probs = F.softmax(out, dim=1)
+                        conf, pred_idx = torch.max(probs, 1)
+                        l_pred = mapa_emociones[pred_idx.item()]
+                    with col:
+                        img_disp = Image.open(p).resize((200, 200), Image.Resampling.LANCZOS)
+                        st.image(img_disp)
+                        st.write(f"**Real:** {l_real.capitalize()}")
+                        if l_real.lower() == l_pred.lower():
+                            st.success(f"**Predicción:** {l_pred} ({conf.item()*100:.2f}%)")
+                        else:
+                            st.error(f"**Predicción:** {l_pred} ({conf.item()*100:.2f}%)")
 
 # --- PESTAÑA 3: EVOLUCIÓN A YOLOv8 ---
 with tab3:
