@@ -1,0 +1,5 @@
+Modelo,Épocas,Train Loss Final,Test Loss Final,Accuracy (%),F1 Macro avg,Mejor clase,Peor clase,Conclusión
+CNN Base,10,0.8197,1.16,47.71,0.479,Happy (F1: 0.68),Disgust (F1: 0.28),"Modelo base sólido, limitado por arquitectura simple"
+VGG16,10,1.568,1.91,~48.00,~0.42,Happy (~0.65),Disgust (~0.20),Descartado — input mismatch 48x48 vs 224x224 provoca overfitting severo
+YOLOv8,10,0.8323,0.8341,61.00 (mAP@50),~0.58,Happy (mAP: 0.942),Disgust (mAP: 0.224),"Transfer Learning: Train ≈ Val Loss, sin overfitting"
+ResNet-18,15,0.0074,0.871,61.00,0.58,Happy (F1: 0.81),Disgust (F1: 0.35),Mejor modelo: skip connections preservan rasgos en baja resolución

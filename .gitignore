@@ -2,3 +2,21 @@
 .Rhistory
 .RData
 .Ruserdata
+
+# Entornos virtuales
+.venv312/
+.venv_py313/
+__pycache__/
+
+# Modelos demasiado grandes (>100 MB)
+modelo_vgg.pth.zip
+modelo_vgg/
+
+# Configuración del editor y sistema
+.vscode/
+.claude/
+.jupyterlab-settings/
+
+# Dataset de imágenes (miles de archivos)
+train/
+test/
