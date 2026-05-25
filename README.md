@@ -108,21 +108,68 @@ Proyecto_final_IA/
 
 ---
 
-## 🚀 Instalación y Ejecución Local
+## 🔧 Instalación y Reproducibilidad
+
+Este proyecto utiliza `pip` y el estándar `requirements.txt` para la gestión eficiente y determinista de entornos y dependencias.
+
+### 1. Clonar el repositorio
 
 ```bash
-# 1. Clonar el repositorio
 git clone https://github.com/martabachillerato/Proyecto_final_ia.git
 cd Proyecto_final_ia
-
-# 2. Instalar dependencias
-pip install -r requirements.txt
-
-# 3. Ejecutar la aplicación
-python -m streamlit run app.py
 ```
 
-Para ejecutar con el dataset completo y activar todos los botones, descarga FER-2013 de Kaggle y coloca las carpetas `train/` y `test/` en la raíz del proyecto.
+### 2. Crear el entorno virtual
+
+```bash
+python -m venv .venv
+```
+
+### 3. Activar el entorno
+
+- **Windows:** `.venv\Scripts\activate`
+- **macOS/Linux:** `source .venv/bin/activate`
+
+### 4. Instalar dependencias
+
+Para instalar las dependencias base y ejecutar la aplicación web (Producción):
+
+```bash
+pip install -r requirements.txt
+```
+
+> *Nota:* Se recomienda **Python 3.11** (especificado en `runtime.txt`). Con versiones superiores algunas dependencias pueden requerir ajustes.
+
+### 5. Dataset
+
+Los pesos de los modelos ya están incluidos en el repositorio. Para **reproducir el entrenamiento completo**, descarga el dataset [FER-2013 de Kaggle](https://www.kaggle.com/datasets/msambare/fer2013) y coloca las carpetas en la raíz del proyecto:
+
+```
+Proyecto_final_IA/
+├── train/    # 28.709 imágenes de entrenamiento
+└── test/     # Imágenes de test
+```
+
+---
+
+## 🚀 Ejecución de la Aplicación
+
+Para lanzar la interfaz interactiva de clasificación de emociones:
+
+```bash
+streamlit run app.py
+```
+
+## 📓 Notebooks
+
+Para ejecutar los notebooks de análisis y entrenamiento:
+
+```bash
+jupyter notebook notebooks/analisis_exploratorio.ipynb  # EDA + interoperabilidad R/Python
+jupyter notebook notebooks/fer2013.ipynb                # Entrenamiento CNN y ResNet-18
+```
+
+> *Nota:* El notebook `analisis_exploratorio.ipynb` requiere **R instalado** y la librería `rpy2` para los bloques de interoperabilidad R/Python.
 
 ---
 
