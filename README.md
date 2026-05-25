@@ -28,8 +28,6 @@ La clasificación manual de emociones en grandes volúmenes de datos es ineficie
 | Desequilibrio | Happy (25.1%) vs Disgust (1.5%) → ratio 17:1 |
 | Fuente | Kaggle FER-2013 Challenge |
 
-El desequilibrio de clases fue identificado y cuantificado mediante un análisis estadístico en **R** (`chisq.test`, `dist()`, `ggplot2`), confirmando que el dataset **no sigue una distribución uniforme** (χ² >> 0, p < 0.001).
-
 ---
 
 ## 🏗️ Evolución de Arquitecturas
@@ -48,7 +46,7 @@ El desequilibrio de clases fue identificado y cuantificado mediante un análisis
 ```
 Proyecto_final_IA/
 │
-├── app.py                        # Aplicación web Streamlit (8 pestañas)
+├── app.py                        # Aplicación web Streamlit 
 ├── requirements.txt              # Dependencias Python para producción
 ├── runtime.txt                   # Versión de Python para Streamlit Cloud
 │
@@ -64,7 +62,7 @@ Proyecto_final_IA/
 │   ├── imagen_ejemplo_modelo3.png
 │   ├── boxplot_emociones.png
 │   ├── dispersion_categorias.jpeg
-│   └── sample_train/             # Muestra de imágenes por emoción para demo cloud
+│   └── sample_train/             # Muestra de imágenes por emoción 
 │       ├── angry/   (5 imágenes)
 │       ├── disgust/ (5 imágenes)
 │       ├── fear/    (5 imágenes)
