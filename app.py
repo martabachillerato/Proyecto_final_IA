@@ -73,7 +73,7 @@ mapa_emociones = {0: 'Angry', 1: 'Disgust', 2: 'Fear', 3: 'Happy', 4: 'Neutral',
 
 def obtener_foto_real(base_path='train'):
     if not os.path.exists(base_path):
-        base_path = 'train'
+        base_path = 'streamlit/sample_train'
     try:
         emociones = [d for d in os.listdir(base_path) if os.path.isdir(os.path.join(base_path, d))]
         emo_elegida = random.choice(emociones)
@@ -159,11 +159,12 @@ with tab1:
     st.subheader("6. Visualización de Datos Reales")
     st.write("Muestras aleatorias del dataset de entrenamiento para inspección visual:")
     if st.button('🔄 Generar muestras aleatorias del Dataset (EDA)'):
-        if not os.path.exists('train'):
+        _train_path = 'train' if os.path.exists('train') else 'streamlit/sample_train'
+        if not os.path.exists(_train_path):
             st.warning("⚠️ El dataset de imágenes no está disponible en esta versión cloud. Esta función requiere ejecutar la app localmente con el dataset descargado.")
         else:
-            p1, l1 = obtener_foto_real('train')
-            p2, l2 = obtener_foto_real('train')
+            p1, l1 = obtener_foto_real(_train_path)
+            p2, l2 = obtener_foto_real(_train_path)
             if p1 and p2:
                 col_eda1, col_eda2 = st.columns(2)
                 with col_eda1:
@@ -567,13 +568,14 @@ with tab2:
     st.header("VISUALIZACIÓN DE PREDICCIONES CON CONFIANZA (%)")
     st.write("Probamos el modelo cargado `modelo_emociones.pth` con datos aleatorios:")
     if st.button('🎯 Realizar Prueba Visual Aleatoria'):
-        if not os.path.exists('test'):
+        _test_path = 'test' if os.path.exists('test') else 'streamlit/sample_train'
+        if not os.path.exists(_test_path):
             st.warning("⚠️ El dataset de imágenes no está disponible en esta versión cloud. Esta función requiere ejecutar la app localmente con el dataset descargado.")
         else:
             col_test1, col_test2 = st.columns(2)
             cnn_m, _, _ = cargar_modelos()
             for col in [col_test1, col_test2]:
-                p, l_real = obtener_foto_real('test')
+                p, l_real = obtener_foto_real(_test_path)
                 if p:
                     img = Image.open(p).convert('L').resize((48, 48))
                     tensor = torch.FloatTensor(np.array(img)/255.0).unsqueeze(0).unsqueeze(0)
