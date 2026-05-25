@@ -146,8 +146,8 @@ Los pesos de los modelos ya están incluidos en el repositorio. Para **reproduci
 
 ```
 Proyecto_final_IA/
-├── train/    # 28.709 imágenes de entrenamiento
-└── test/     # Imágenes de test
+├── train/
+└── test/
 ```
 
 ---
