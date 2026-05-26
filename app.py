@@ -71,6 +71,24 @@ def cargar_modelos():
 
 mapa_emociones = {0: 'Angry', 1: 'Disgust', 2: 'Fear', 3: 'Happy', 4: 'Neutral', 5: 'Sad', 6: 'Surprise'}
 
+CONTEOS_FIJOS = {'angry': 3995, 'disgust': 436, 'fear': 4097, 'happy': 7215, 'neutral': 4965, 'sad': 4830, 'surprise': 3171}
+
+@st.cache_data
+def contar_imagenes_dataset(base_path='train'):
+    EXTENSIONES = {'.jpg', '.jpeg', '.png'}
+    if not os.path.exists(base_path):
+        return None, 0
+    conteos = {}
+    total = 0
+    for emocion in sorted(os.listdir(base_path)):
+        carpeta = os.path.join(base_path, emocion)
+        if not os.path.isdir(carpeta):
+            continue
+        n = sum(1 for f in os.listdir(carpeta) if os.path.splitext(f)[1].lower() in EXTENSIONES)
+        conteos[emocion] = n
+        total += n
+    return conteos, total
+
 def obtener_foto_real(base_path='train'):
     if not os.path.exists(base_path):
         base_path = 'streamlit/sample_train'
@@ -106,11 +124,22 @@ with tab1:
 
     st.subheader("1. Tabla Dinámica de Emociones")
     st.write("Resumen de conteos por emoción generado con `pivot_table` de Pandas (Tema 5):")
+
+    conteos_reales, total_real = contar_imagenes_dataset('train')
+    if conteos_reales:
+        st.caption("✅ Conteo calculado dinámicamente recorriendo el dataset completo.")
+        filas_emociones = [(e.capitalize(), n) for e, n in sorted(conteos_reales.items())]
+    else:
+        st.caption("ℹ️ Dataset no disponible en este entorno — mostrando valores del dataset completo.")
+        filas_emociones = [(e.capitalize(), n) for e, n in sorted(CONTEOS_FIJOS.items())]
+        total_real = sum(CONTEOS_FIJOS.values())
+
     pivot_data = {
-        "Emoción":  ["Angry", "Disgust", "Fear", "Happy", "Neutral", "Sad", "Surprise", "**Total**"],
-        "Imágenes": [3995, 436, 4097, 7215, 4965, 4830, 3171, 28709],
+        "Emoción":  [e for e, _ in filas_emociones] + ["**Total**"],
+        "Imágenes": [n for _, n in filas_emociones] + [total_real],
     }
     st.dataframe(pd.DataFrame(pivot_data), use_container_width=True, hide_index=True)
+    st.metric("Total de imágenes en el dataset", f"{total_real:,}")
 
     st.subheader("2. Mapeo de Etiquetas")
     st.write("La IA no entiende palabras, necesita números. Traducimos las etiquetas textuales a códigos numéricos mediante un diccionario.")
@@ -177,6 +206,49 @@ with tab1:
 # --- PESTAÑA 2: ANÁLISIS EN R ---
 with tab_r:
     st.header("📈 Análisis Estadístico en R — Reproducción en Python")
+
+    # ── Conteo de imágenes ejecutado en R ──────────────────────────────────
+    st.subheader("🔢 Conteo Total de Imágenes del Dataset (ejecutado en R)")
+    st.write("Pulsa el botón para ejecutar el script R real. "
+             "R leerá el CSV del dataset, agrupará por emoción y calculará el total.")
+
+    st.code("""# analisis_r/contar_imagenes.R
+library(dplyr)
+datos  <- read.csv("streamlit/datos_emociones.csv")
+conteo <- datos %>% count(label, name = "imagenes")
+total  <- nrow(datos)
+print(conteo)
+cat("Total de imagenes en el dataset:", total, "\\n")""", language="r")
+
+    if st.button("▶️ Ejecutar script R"):
+        import subprocess, re
+        with st.spinner("Ejecutando R..."):
+            proc = subprocess.run(
+                ["Rscript", "analisis_r/contar_imagenes.R"],
+                capture_output=True, text=True, timeout=60
+            )
+        salida = proc.stdout
+        filas = re.findall(r'\d+\s+(\w+)\s+(\d+)', salida)
+        match_total = re.search(r'Total de imagenes en el dataset:\s*(\d+)', salida)
+
+        if filas and match_total:
+            df_conteo_r = pd.DataFrame(filas, columns=["Emoción", "Imágenes"])
+            df_conteo_r["Emoción"] = df_conteo_r["Emoción"].str.capitalize()
+            df_conteo_r["Imágenes"] = df_conteo_r["Imágenes"].astype(int)
+            total_desde_r = int(match_total.group(1))
+            st.dataframe(df_conteo_r, use_container_width=True, hide_index=True)
+            st.metric("Total de imágenes calculado en R", f"{total_desde_r:,}")
+            st.success("✅ Resultado obtenido ejecutando `analisis_r/contar_imagenes.R` con Rscript.")
+        else:
+            st.warning("⚠️ R no disponible en este entorno. Mostrando valores del dataset completo.")
+            df_conteo_fallback = pd.DataFrame([
+                {"Emoción": k.capitalize(), "Imágenes": v} for k, v in sorted(CONTEOS_FIJOS.items())
+            ])
+            st.dataframe(df_conteo_fallback, use_container_width=True, hide_index=True)
+            st.metric("Total de imágenes en el dataset", f"{sum(CONTEOS_FIJOS.values()):,}")
+
+    st.divider()
+
     st.write("""
     Esta pestaña reproduce los análisis estadísticos desarrollados en **R** a través de `rpy2` en el notebook
     `analisis_exploratorio.ipynb` y los scripts `analisis_estadistico.R` y `complemento_en_R.R`.

@@ -3,7 +3,7 @@ library(dplyr)
 library(stats)
 
 # 1. Carga tus datos reales
-datos <- read.csv("datos_emociones.csv")
+datos <- read.csv("streamlit/datos_emociones.csv")
 
 # 2. Tu pipeline limpio asignado SÍ O SÍ a 'grafico2'
 grafico2 <- datos %>%
