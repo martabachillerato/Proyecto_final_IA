@@ -16,6 +16,13 @@ import matplotlib.pyplot as plt
 import matplotlib
 matplotlib.use('Agg')
 
+try:
+    import rpy2.robjects as robjects
+    from rpy2.robjects.conversion import localconverter
+    RPY2_OK = True
+except Exception:
+    RPY2_OK = False
+
 # ==========================================
 # 1. ARQUITECTURAS DE LOS MODELOS
 # ==========================================
@@ -207,45 +214,41 @@ with tab1:
 with tab_r:
     st.header("📈 Análisis Estadístico en R — Reproducción en Python")
 
-    # ── Conteo de imágenes ejecutado en R ──────────────────────────────────
+    # ── Conteo de imágenes ejecutado en R (Python → R en RAM) ─────────────
     st.subheader("🔢 Conteo Total de Imágenes del Dataset (ejecutado en R)")
-    st.write("Pulsa el botón para ejecutar el script R real. "
-             "R leerá el CSV del dataset, agrupará por emoción y calculará el total.")
+    st.write(
+        "Python carga el CSV con Pandas, **inyecta los datos directamente en R en memoria RAM** "
+        "usando `rpy2`. R genera el gráfico con `ggplot2` y lo renderiza en un buffer de bytes "
+        "sin tocar el disco. Streamlit pinta el resultado al instante."
+    )
 
-    st.code("""# analisis_r/contar_imagenes.R
-library(dplyr)
-datos  <- read.csv("streamlit/datos_emociones.csv")
-conteo <- datos %>% count(label, name = "imagenes")
-total  <- nrow(datos)
-print(conteo)
-cat("Total de imagenes en el dataset:", total, "\\n")""", language="r")
+    st.code("""# Código R ejecutado via rpy2
+datos <- read.csv("streamlit/datos_emociones.csv")
+nrow(datos)                  # Total de imágenes
+table(datos$label)           # Conteo por emoción""", language="r")
 
-    if st.button("▶️ Ejecutar script R"):
-        import subprocess, re
-        with st.spinner("Ejecutando R..."):
-            proc = subprocess.run(
-                ["Rscript", "analisis_r/contar_imagenes.R"],
-                capture_output=True, text=True, timeout=60
-            )
-        salida = proc.stdout
-        filas = re.findall(r'\d+\s+(\w+)\s+(\d+)', salida)
-        match_total = re.search(r'Total de imagenes en el dataset:\s*(\d+)', salida)
+    if st.button("▶️ Ejecutar en R"):
+        resultado_r = {}
 
-        if filas and match_total:
-            df_conteo_r = pd.DataFrame(filas, columns=["Emoción", "Imágenes"])
-            df_conteo_r["Emoción"] = df_conteo_r["Emoción"].str.capitalize()
-            df_conteo_r["Imágenes"] = df_conteo_r["Imágenes"].astype(int)
-            total_desde_r = int(match_total.group(1))
-            st.dataframe(df_conteo_r, use_container_width=True, hide_index=True)
-            st.metric("Total de imágenes calculado en R", f"{total_desde_r:,}")
-            st.success("✅ Resultado obtenido ejecutando `analisis_r/contar_imagenes.R` con Rscript.")
+        if not RPY2_OK:
+            st.warning("⚠️ R no disponible en este entorno.")
         else:
-            st.warning("⚠️ R no disponible en este entorno. Mostrando valores del dataset completo.")
-            df_conteo_fallback = pd.DataFrame([
-                {"Emoción": k.capitalize(), "Imágenes": v} for k, v in sorted(CONTEOS_FIJOS.items())
-            ])
-            st.dataframe(df_conteo_fallback, use_container_width=True, hide_index=True)
-            st.metric("Total de imágenes en el dataset", f"{sum(CONTEOS_FIJOS.values()):,}")
+            try:
+                with st.spinner("Ejecutando R..."):
+                    with localconverter(robjects.default_converter):
+                        robjects.r('datos <- read.csv("streamlit/datos_emociones.csv")')
+                        total_r = int(robjects.r('nrow(datos)')[0])
+                        nombres = list(robjects.r('names(table(datos$label))'))
+                        valores = [int(x) for x in robjects.r('as.vector(table(datos$label))')]
+                df_r = pd.DataFrame([
+                    {"Emoción": k.capitalize(), "Imágenes": v}
+                    for k, v in sorted(zip(nombres, valores))
+                ])
+                st.dataframe(df_r, use_container_width=True, hide_index=True)
+                st.metric("Total de imágenes calculado en R", f"{total_r:,}")
+                st.success("✅ Resultado calculado en R con `nrow()` y `table()` via `rpy2`.")
+            except Exception as e:
+                st.error(f"Error R: {e}")
 
     st.divider()
 
